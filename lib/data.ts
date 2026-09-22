@@ -7,7 +7,25 @@ import type {
   ProjectImage,
   ProjectWithImages,
   Skill,
+  Stat,
 } from '@/lib/types'
+
+export async function getStats() {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('stats')
+    .select('*')
+    .order('sort_order')
+    .order('created_at')
+    .returns<Stat[]>()
+  return data ?? []
+}
+
+export async function getStatById(id: string) {
+  const supabase = await createClient()
+  const { data } = await supabase.from('stats').select('*').eq('id', id).maybeSingle<Stat>()
+  return data
+}
 
 export async function getSkills() {
   const supabase = await createClient()

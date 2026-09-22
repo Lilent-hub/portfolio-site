@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
+import { getProfile } from "@/lib/data";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,14 +16,26 @@ const sora = Sora({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "John Dignadice — Virtual Assistant",
-    template: "%s · John Dignadice",
-  },
-  description:
-    "Organized admin and CRM support for busy businesses and growing teams.",
-};
+/** Title and description follow the profile, so admin edits reach search and shared links. */
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getProfile();
+  const name = profile?.name ?? "Portfolio";
+  const shortName = name.split(/\s+/).slice(0, 1).concat(name.split(/\s+/).slice(-1)).join(" ");
+
+  return {
+    title: {
+      default: profile?.headline ? `${name} — ${profile.headline}` : name,
+      template: `%s · ${shortName}`,
+    },
+    description: profile?.tagline ?? undefined,
+    openGraph: {
+      title: profile?.headline ? `${name} — ${profile.headline}` : name,
+      description: profile?.tagline ?? undefined,
+      type: "website",
+      images: profile?.avatar_url ? [profile.avatar_url] : undefined,
+    },
+  };
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

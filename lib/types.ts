@@ -5,8 +5,22 @@ export type Profile = {
   tagline: string | null
   bio: string | null
   highlights: string[]
+  competencies: string[]
+  skills_lede: string | null
+  projects_lede: string | null
+  contact_heading: string | null
+  contact_lede: string | null
   avatar_url: string | null
   resume_url: string | null
+  updated_at: string
+}
+
+export type Stat = {
+  id: string
+  value: string
+  label: string
+  sort_order: number
+  created_at: string
   updated_at: string
 }
 

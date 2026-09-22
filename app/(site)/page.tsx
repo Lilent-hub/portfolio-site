@@ -12,7 +12,7 @@ import {
 import { ProjectCard } from '@/components/ProjectCard'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
-import { getContact, getCredentials, getProfile, getProjects, getSkills } from '@/lib/data'
+import { getContact, getCredentials, getProfile, getProjects, getSkills, getStats } from '@/lib/data'
 import { SkillsMarquee } from '@/components/SkillsMarquee'
 
 const delay = (ms: number) => ({ '--delay': `${ms}ms` }) as CSSProperties
@@ -23,12 +23,13 @@ function formatDate(d: string | null) {
 }
 
 export default async function Home() {
-  const [profile, projects, credentials, contact, skills] = await Promise.all([
+  const [profile, projects, credentials, contact, skills, stats] = await Promise.all([
     getProfile(),
     getProjects(),
     getCredentials(),
     getContact(),
     getSkills(),
+    getStats(),
   ])
 
   const paragraphs = (profile?.bio ?? '')
@@ -36,6 +37,7 @@ export default async function Home() {
     .map((p) => p.trim())
     .filter(Boolean)
   const highlights = profile?.highlights ?? []
+  const competencies = profile?.competencies ?? []
 
 
   return (
@@ -124,26 +126,26 @@ export default async function Home() {
               </p>
             ))}
           </div>
-          {highlights.length > 0 && (
+          {stats.length > 0 && (
             <aside className="relative flex flex-col rounded-2xl border border-line bg-surface p-6 sm:p-8">
               <div className="absolute -top-px left-6 h-px w-16 bg-accent" aria-hidden />
               <h3 className="mb-6 font-display text-sm font-semibold uppercase tracking-[0.15em] text-muted">
-                What you can count on
+                By the numbers
               </h3>
-              {/* Items spread to fill the column so the card matches the bio's height. */}
-              <ul className="flex flex-1 flex-col justify-between gap-6">
-                {highlights.map((h, i) => (
-                  <li key={h} className="flex items-start gap-4">
-                    <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
-                      <CheckIcon size={16} />
-                    </span>
-                    <span className="flex flex-col gap-1">
-                      <span className="font-mono text-[11px] tracking-[0.2em] text-accent/80">0{i + 1}</span>
-                      <span className="font-display text-lg font-medium leading-snug text-text sm:text-xl">{h}</span>
-                    </span>
-                  </li>
+              {/* Two-up grid that stretches to match the bio column's height. */}
+              <dl className="grid flex-1 grid-cols-2 gap-x-5 gap-y-7 sm:gap-y-8">
+                {stats.map((s) => (
+                  <div key={s.id} className="flex flex-col justify-center gap-1.5">
+                    <dt className="sr-only">{s.label}</dt>
+                    <dd className="flex flex-col gap-1.5">
+                      <span className="font-display text-3xl font-bold leading-none tracking-tight text-accent tabular-nums sm:text-4xl">
+                        {s.value}
+                      </span>
+                      <span className="text-sm leading-snug text-muted">{s.label}</span>
+                    </dd>
+                  </div>
                 ))}
-              </ul>
+              </dl>
             </aside>
           )}
         </div>
@@ -156,11 +158,17 @@ export default async function Home() {
             <SectionHeading
               eyebrow="02 — Skills"
               title="Tools & Expertise"
-              lede="The stack I work in every day, from CRM and calendars to data cleanup."
+              lede={profile?.skills_lede ?? undefined}
             />
           </Reveal>
           <Reveal className="pb-20 md:pb-28">
             <SkillsMarquee skills={skills} />
+            {competencies.length > 0 && (
+              <p className="mx-auto mt-8 max-w-[1100px] px-5 text-sm text-muted sm:px-8">
+                <span className="text-text">Also: </span>
+                {competencies.join(' · ')}
+              </p>
+            )}
           </Reveal>
         </section>
       )}
@@ -170,7 +178,7 @@ export default async function Home() {
         <SectionHeading
           eyebrow="03 — Projects"
           title="Selected Work"
-          lede="Systems I built to keep records clean, tasks moving, and schedules on track."
+          lede={profile?.projects_lede ?? undefined}
         />
         {projects.length > 0 ? (
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -237,11 +245,9 @@ export default async function Home() {
               {credentials.length > 0 ? '05' : '04'} — Contact
             </span>
             <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-5xl">
-              Let&apos;s Work Together
+              {profile?.contact_heading ?? "Let's Work Together"}
             </h2>
-            <p className="max-w-lg text-muted sm:text-lg">
-              Need dependable admin or CRM support? Send a note and I&apos;ll reply within a business day.
-            </p>
+            {profile?.contact_lede && <p className="max-w-lg text-muted sm:text-lg">{profile.contact_lede}</p>}
 
             {contact?.email && (
               <div className="flex flex-col items-center gap-4">

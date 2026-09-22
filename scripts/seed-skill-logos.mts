@@ -22,6 +22,9 @@ const SOURCES: Record<string, string> = {
   Asana: 'https://cdn.simpleicons.org/asana/F06A6A',
   'Salesforce CRM': 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg',
   'Monday.com': 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Monday_logo.svg',
+  n8n: 'https://cdn.simpleicons.org/n8n/EA4B71',
+  Supabase: 'https://cdn.simpleicons.org/supabase/3FCF8E',
+  Vercel: 'https://cdn.simpleicons.org/vercel/000000',
 }
 
 function loadEnv() {

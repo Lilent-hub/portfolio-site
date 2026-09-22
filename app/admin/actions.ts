@@ -43,6 +43,11 @@ export async function updateProfile(_prev: ActionState, fd: FormData): Promise<A
         .split('\n')
         .map((s) => s.trim())
         .filter(Boolean),
+      competencies: list(str(fd, 'competencies')),
+      skills_lede: orNull(str(fd, 'skills_lede')),
+      projects_lede: orNull(str(fd, 'projects_lede')),
+      contact_heading: orNull(str(fd, 'contact_heading')),
+      contact_lede: orNull(str(fd, 'contact_lede')),
       avatar_url: orNull(str(fd, 'avatar_url')),
       updated_at: new Date().toISOString(),
     })
@@ -238,6 +243,46 @@ export async function moveSkill(fd: FormData) {
   revalidate()
 }
 
+/* -------------------------------------------------------------------- stats */
+
+export async function saveStat(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  const id = str(fd, 'id')
+  const value = str(fd, 'value')
+  const label = str(fd, 'label')
+  const errors: Record<string, string> = {}
+  if (!value) errors.value = 'Number is required.'
+  if (!label) errors.label = 'Label is required.'
+  if (Object.keys(errors).length) return { ok: false, message: 'Please fix the highlighted fields.', errors }
+
+  const supabase = await createClient()
+  const payload = { value, label, updated_at: new Date().toISOString() }
+
+  if (id) {
+    const { error } = await supabase.from('stats').update(payload).eq('id', id)
+    if (error) return { ok: false, message: error.message }
+    revalidate()
+    return { ok: true, message: 'Stat saved.' }
+  }
+
+  const { count } = await supabase.from('stats').select('*', { count: 'exact', head: true })
+  const { error } = await supabase.from('stats').insert({ ...payload, sort_order: (count ?? 0) + 1 })
+  if (error) return { ok: false, message: error.message }
+  revalidate()
+  redirect('/admin/stats?created=1')
+}
+
+export async function deleteStat(fd: FormData) {
+  const supabase = await createClient()
+  await supabase.from('stats').delete().eq('id', str(fd, 'id'))
+  revalidate()
+  redirect('/admin/stats')
+}
+
+export async function moveStat(fd: FormData) {
+  await moveRow('stats', str(fd, 'id'), Number(fd.get('dir')) as -1 | 1)
+  revalidate()
+}
+
 /* -------------------------------------------------------------------- auth */
 
 export async function logout() {
@@ -249,7 +294,7 @@ export async function logout() {
 /* ----------------------------------------------------------------- helpers */
 
 /** Swap a row with its neighbour and renumber sort_order 1..n. */
-async function moveRow(table: 'projects' | 'credentials' | 'skills', id: string, dir: -1 | 1) {
+async function moveRow(table: 'projects' | 'credentials' | 'skills' | 'stats', id: string, dir: -1 | 1) {
   const supabase = await createClient()
   const { data } = await supabase
     .from(table)
