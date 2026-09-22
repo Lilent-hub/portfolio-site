@@ -1,29 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "John Dignadice - Portfolio",
-  description: "Personal portfolio of John Dignadice",
+  title: {
+    default: "John Dignadice — Virtual Assistant",
+    template: "%s · John Dignadice",
+  },
+  description:
+    "Organized admin and CRM support for busy businesses and growing teams.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${inter.variable} ${sora.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col bg-bg text-text">{children}</body>
     </html>
   );
 }
