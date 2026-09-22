@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowLeftIcon } from '@/components/icons'
+import { Logo } from '@/components/Logo'
 import { login } from './actions'
 import { LoginSubmit } from './LoginSubmit'
 
@@ -20,9 +21,7 @@ export default async function LoginPage({ searchParams }: PageProps<'/login'>) {
         </Link>
         <div className="rounded-2xl border border-line bg-surface/80 p-7 backdrop-blur">
           <div className="mb-6 flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-lg border border-line-strong bg-surface font-display text-sm font-semibold text-accent">
-              JD
-            </span>
+            <Logo size={40} />
             <div>
               <h1 className="font-display text-lg font-semibold tracking-tight">Sign in to admin</h1>
               <p className="text-xs text-muted">Edit the portfolio content.</p>

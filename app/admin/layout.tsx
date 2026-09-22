@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ExternalIcon, LogoutIcon } from '@/components/icons'
+import { Logo } from '@/components/Logo'
 import { createClient } from '@/lib/supabase/server'
 import { logout } from './actions'
 import { AdminNav } from './_components/AdminNav'
@@ -21,9 +22,7 @@ export default async function AdminLayout({ children }: LayoutProps<'/admin'>) {
       <aside className="flex shrink-0 flex-col border-b border-line bg-surface/60 md:sticky md:top-0 md:h-screen md:w-64 md:border-b-0 md:border-r">
         <div className="flex items-center justify-between px-5 py-4 md:block md:py-6">
           <Link href="/admin" className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-lg border border-line-strong bg-surface font-display text-sm font-semibold text-accent">
-              JD
-            </span>
+            <Logo size={36} />
             <span>
               <span className="block font-display text-sm font-semibold">Site admin</span>
               <span className="block max-w-[150px] truncate text-xs text-muted">{user?.email}</span>

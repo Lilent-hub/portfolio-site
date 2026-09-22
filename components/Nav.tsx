@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { MenuIcon, XIcon } from './icons'
+import { Logo } from './Logo'
 
 const LINKS = [
   { href: '/#about', id: 'about', label: 'About' },
@@ -12,7 +13,7 @@ const LINKS = [
   { href: '/#contact', id: 'contact', label: 'Contact' },
 ]
 
-export function Nav({ email, initials = 'JD' }: { email?: string | null; initials?: string }) {
+export function Nav({ email }: { email?: string | null }) {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -72,9 +73,7 @@ export function Nav({ email, initials = 'JD' }: { email?: string | null; initial
           className="group flex items-center gap-3 font-display text-sm font-semibold tracking-tight"
           onClick={() => setOpen(false)}
         >
-          <span className="grid h-9 w-9 place-items-center rounded-lg border border-line-strong bg-surface text-accent transition-colors group-hover:border-accent/60">
-            {initials}
-          </span>
+          <Logo size={36} className="rounded-[9px] transition-[filter] group-hover:brightness-125" />
           <span className="hidden text-text sm:inline">Portfolio</span>
         </Link>
 
