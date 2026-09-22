@@ -1,31 +1,53 @@
+import Link from 'next/link'
+import { ArrowLeftIcon } from '@/components/icons'
 import { login } from './actions'
+import { LoginSubmit } from './LoginSubmit'
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>
-}) {
+export const metadata = { title: 'Sign in', robots: { index: false, follow: false } }
+
+export default async function LoginPage({ searchParams }: PageProps<'/login'>) {
   const { error } = await searchParams
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-4 p-6">
-      <h1 className="text-2xl font-semibold">Sign in</h1>
-      {error && (
-        <p className="text-sm text-red-600">Invalid email or password.</p>
-      )}
-      <form className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1 text-sm">
-          Email
-          <input name="email" type="email" required className="border rounded px-3 py-2" />
-        </label>
-        <label className="flex flex-col gap-1 text-sm">
-          Password
-          <input name="password" type="password" required className="border rounded px-3 py-2" />
-        </label>
-        <button formAction={login} className="rounded bg-black px-4 py-2 text-white">
-          Sign in
-        </button>
-      </form>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-16">
+      <div className="bg-grid absolute inset-0 -z-10" aria-hidden />
+      <div className="hero-glow absolute inset-0 -z-10" aria-hidden />
+
+      <div className="rise w-full max-w-sm">
+        <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm text-muted hover:text-accent">
+          <ArrowLeftIcon size={16} />
+          Back to site
+        </Link>
+        <div className="rounded-2xl border border-line bg-surface/80 p-7 backdrop-blur">
+          <div className="mb-6 flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-lg border border-line-strong bg-surface font-display text-sm font-semibold text-accent">
+              JD
+            </span>
+            <div>
+              <h1 className="font-display text-lg font-semibold tracking-tight">Sign in to admin</h1>
+              <p className="text-xs text-muted">Edit the portfolio content.</p>
+            </div>
+          </div>
+
+          {error && (
+            <p role="alert" className="mb-4 rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 text-sm text-danger">
+              Invalid email or password.
+            </p>
+          )}
+
+          <form action={login} className="flex flex-col gap-4">
+            <label className="flex flex-col gap-1.5 text-sm font-medium">
+              Email
+              <input name="email" type="email" autoComplete="email" required className="field" />
+            </label>
+            <label className="flex flex-col gap-1.5 text-sm font-medium">
+              Password
+              <input name="password" type="password" autoComplete="current-password" required className="field" />
+            </label>
+            <LoginSubmit />
+          </form>
+        </div>
+      </div>
     </main>
   )
 }
