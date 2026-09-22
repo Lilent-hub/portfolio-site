@@ -15,6 +15,8 @@ export async function updateProfile(formData: FormData) {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
+  // Only overwrite the picture when a new file was actually chosen
+  const avatarUrl = await uploadIfPresent(supabase, formData.get('avatar') as File)
 
   await supabase
     .from('profile')
@@ -23,6 +25,7 @@ export async function updateProfile(formData: FormData) {
       headline: formData.get('headline'),
       bio: formData.get('bio'),
       skills,
+      ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
       updated_at: new Date().toISOString(),
     })
     .eq('id', formData.get('id'))

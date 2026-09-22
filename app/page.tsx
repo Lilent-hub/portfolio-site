@@ -19,6 +19,14 @@ export default async function Home() {
   return (
     <main className="mx-auto max-w-3xl px-6">
       <section className="flex min-h-[70vh] flex-col justify-center gap-4">
+        {profile?.avatar_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={profile.avatar_url}
+            alt={profile.name}
+            className="h-32 w-32 rounded-full object-cover"
+          />
+        )}
         <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
           {profile?.name}
         </h1>

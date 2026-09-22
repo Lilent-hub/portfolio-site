@@ -40,8 +40,22 @@ export default async function AdminPage() {
 
       <section className="mb-10">
         <h2 className="mb-3 font-medium">Profile & Skills</h2>
-        <form action={updateProfile} className="flex flex-col gap-3">
+        <form action={updateProfile} encType="multipart/form-data" className="flex flex-col gap-3">
           <input type="hidden" name="id" value={profile?.id} />
+          <div className="flex items-center gap-4">
+            {profile?.avatar_url && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={profile.avatar_url}
+                alt="Current profile picture"
+                className="h-16 w-16 rounded-full object-cover"
+              />
+            )}
+            <label className="flex flex-col gap-1 text-sm">
+              Profile picture
+              <input name="avatar" type="file" accept="image/*" className="text-sm" />
+            </label>
+          </div>
           <input name="name" defaultValue={profile?.name} placeholder="Name" className="border rounded px-3 py-2" />
           <input name="headline" defaultValue={profile?.headline ?? ''} placeholder="Headline" className="border rounded px-3 py-2" />
           <textarea name="bio" defaultValue={profile?.bio ?? ''} placeholder="Bio" rows={4} className="border rounded px-3 py-2" />
