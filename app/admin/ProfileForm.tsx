@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState } from 'react'
 import type { Profile } from '@/lib/types'
 import { updateProfile } from './actions'
@@ -39,7 +40,7 @@ export function ProfileForm({ profile }: { profile: Profile }) {
         <Field label="Bio" name="bio" hint="Separate paragraphs with a blank line.">
           <textarea id="bio" name="bio" defaultValue={profile.bio ?? ''} rows={8} className="field resize-y" />
         </Field>
-        <Field label="Highlights" name="highlights" hint="One per line. Shown in the hero and the About card.">
+        <Field label="Highlights" name="highlights" hint="One per line. Shown in the hero and the “What you can count on” card.">
           <textarea
             id="highlights"
             name="highlights"
@@ -48,19 +49,13 @@ export function ProfileForm({ profile }: { profile: Profile }) {
             className="field resize-y"
           />
         </Field>
-      </Card>
-
-      <Card className="flex flex-col gap-5">
-        <h2 className="font-display text-base font-semibold">Skills</h2>
-        <Field label="Skills" name="skills" hint="Comma-separated, in the order you want them shown.">
-          <textarea
-            id="skills"
-            name="skills"
-            defaultValue={profile.skills?.join(', ') ?? ''}
-            rows={3}
-            className="field resize-y"
-          />
-        </Field>
+        <p className="text-xs text-muted">
+          Tools &amp; logos live under{' '}
+          <Link href="/admin/skills" className="text-accent hover:underline">
+            Skills
+          </Link>
+          .
+        </p>
       </Card>
 
       <div className="flex items-center gap-4">

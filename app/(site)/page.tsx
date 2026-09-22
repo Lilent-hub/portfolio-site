@@ -12,7 +12,8 @@ import {
 import { ProjectCard } from '@/components/ProjectCard'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
-import { getContact, getCredentials, getProfile, getProjects } from '@/lib/data'
+import { getContact, getCredentials, getProfile, getProjects, getSkills } from '@/lib/data'
+import { SkillsMarquee } from '@/components/SkillsMarquee'
 
 const delay = (ms: number) => ({ '--delay': `${ms}ms` }) as CSSProperties
 
@@ -22,11 +23,12 @@ function formatDate(d: string | null) {
 }
 
 export default async function Home() {
-  const [profile, projects, credentials, contact] = await Promise.all([
+  const [profile, projects, credentials, contact, skills] = await Promise.all([
     getProfile(),
     getProjects(),
     getCredentials(),
     getContact(),
+    getSkills(),
   ])
 
   const paragraphs = (profile?.bio ?? '')
@@ -34,7 +36,7 @@ export default async function Home() {
     .map((p) => p.trim())
     .filter(Boolean)
   const highlights = profile?.highlights ?? []
-  const skills = profile?.skills ?? []
+
 
   return (
     <main>
@@ -113,7 +115,7 @@ export default async function Home() {
 
       {/* --------------------------------------------------------------- About */}
       <Reveal as="section" id="about" className="mx-auto max-w-[1100px] px-5 py-20 sm:px-8 md:py-28">
-        <SectionHeading eyebrow="01 — About" title="About me" />
+        <SectionHeading eyebrow="01 — About" title="About Me" />
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr] md:gap-16">
           <div className="flex flex-col gap-5 text-base leading-relaxed text-muted sm:text-lg">
             {paragraphs.map((p, i) => (
@@ -123,18 +125,22 @@ export default async function Home() {
             ))}
           </div>
           {highlights.length > 0 && (
-            <aside className="relative rounded-2xl border border-line bg-surface p-6 sm:p-7">
+            <aside className="relative flex flex-col rounded-2xl border border-line bg-surface p-6 sm:p-8">
               <div className="absolute -top-px left-6 h-px w-16 bg-accent" aria-hidden />
-              <h3 className="mb-4 font-display text-sm font-semibold uppercase tracking-[0.15em] text-muted">
+              <h3 className="mb-6 font-display text-sm font-semibold uppercase tracking-[0.15em] text-muted">
                 What you can count on
               </h3>
-              <ul className="flex flex-col gap-3">
-                {highlights.map((h) => (
-                  <li key={h} className="flex items-start gap-3 text-sm text-text">
-                    <span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
-                      <CheckIcon size={12} />
+              {/* Items spread to fill the column so the card matches the bio's height. */}
+              <ul className="flex flex-1 flex-col justify-between gap-6">
+                {highlights.map((h, i) => (
+                  <li key={h} className="flex items-start gap-4">
+                    <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
+                      <CheckIcon size={16} />
                     </span>
-                    {h}
+                    <span className="flex flex-col gap-1">
+                      <span className="font-mono text-[11px] tracking-[0.2em] text-accent/80">0{i + 1}</span>
+                      <span className="font-display text-lg font-medium leading-snug text-text sm:text-xl">{h}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -146,23 +152,15 @@ export default async function Home() {
       {/* -------------------------------------------------------------- Skills */}
       {skills.length > 0 && (
         <section id="skills" className="border-y border-line bg-surface/40">
-          <Reveal className="mx-auto max-w-[1100px] px-5 py-20 sm:px-8 md:py-28">
+          <Reveal className="mx-auto max-w-[1100px] px-5 pt-20 sm:px-8 md:pt-28">
             <SectionHeading
               eyebrow="02 — Skills"
-              title="Tools & expertise"
+              title="Tools & Expertise"
               lede="The stack I work in every day, from CRM and calendars to data cleanup."
             />
-            <ul className="flex flex-wrap gap-2.5">
-              {skills.map((s, i) => (
-                <li
-                  key={s}
-                  className="reveal is-visible rounded-full border border-line bg-bg/60 px-4 py-2 text-sm font-medium text-text transition-[border-color,color,transform] hover:-translate-y-0.5 hover:border-accent/60 hover:text-accent"
-                  style={delay(i * 30)}
-                >
-                  {s}
-                </li>
-              ))}
-            </ul>
+          </Reveal>
+          <Reveal className="pb-20 md:pb-28">
+            <SkillsMarquee skills={skills} />
           </Reveal>
         </section>
       )}
@@ -171,7 +169,7 @@ export default async function Home() {
       <Reveal as="section" id="projects" className="mx-auto max-w-[1100px] px-5 py-20 sm:px-8 md:py-28">
         <SectionHeading
           eyebrow="03 — Projects"
-          title="Selected work"
+          title="Selected Work"
           lede="Systems I built to keep records clean, tasks moving, and schedules on track."
         />
         {projects.length > 0 ? (
@@ -197,7 +195,7 @@ export default async function Home() {
       {credentials.length > 0 && (
         <section id="credentials" className="border-y border-line bg-surface/40">
           <Reveal className="mx-auto max-w-[1100px] px-5 py-20 sm:px-8 md:py-28">
-            <SectionHeading eyebrow="04 — Credentials" title="Certificates & training" />
+            <SectionHeading eyebrow="04 — Credentials" title="Certificates & Training" />
             <ul className="divide-y divide-line rounded-2xl border border-line bg-surface">
               {credentials.map((c) => (
                 <li key={c.id} className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -239,7 +237,7 @@ export default async function Home() {
               {credentials.length > 0 ? '05' : '04'} — Contact
             </span>
             <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-5xl">
-              Let&apos;s work together
+              Let&apos;s Work Together
             </h2>
             <p className="max-w-lg text-muted sm:text-lg">
               Need dependable admin or CRM support? Send a note and I&apos;ll reply within a business day.

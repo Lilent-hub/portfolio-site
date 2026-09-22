@@ -6,7 +6,25 @@ import type {
   Project,
   ProjectImage,
   ProjectWithImages,
+  Skill,
 } from '@/lib/types'
+
+export async function getSkills() {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('skills')
+    .select('*')
+    .order('sort_order')
+    .order('created_at')
+    .returns<Skill[]>()
+  return data ?? []
+}
+
+export async function getSkillById(id: string) {
+  const supabase = await createClient()
+  const { data } = await supabase.from('skills').select('*').eq('id', id).maybeSingle<Skill>()
+  return data
+}
 
 export async function getProfile() {
   const supabase = await createClient()

@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { AtIcon, AwardIcon, LayersIcon, UserIcon } from '@/components/icons'
+import { AtIcon, AwardIcon, LayersIcon, SparkIcon, UserIcon } from '@/components/icons'
 
 const ITEMS = [
   { href: '/admin', label: 'Profile', icon: UserIcon, exact: true },
+  { href: '/admin/skills', label: 'Skills', icon: SparkIcon },
   { href: '/admin/projects', label: 'Projects', icon: LayersIcon },
   { href: '/admin/credentials', label: 'Credentials', icon: AwardIcon },
   { href: '/admin/contact', label: 'Contact', icon: AtIcon },

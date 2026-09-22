@@ -5,9 +5,17 @@ export type Profile = {
   tagline: string | null
   bio: string | null
   highlights: string[]
-  skills: string[] | null
   avatar_url: string | null
   resume_url: string | null
+  updated_at: string
+}
+
+export type Skill = {
+  id: string
+  name: string
+  icon_url: string | null
+  sort_order: number
+  created_at: string
   updated_at: string
 }
 

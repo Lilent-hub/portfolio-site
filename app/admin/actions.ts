@@ -43,7 +43,6 @@ export async function updateProfile(_prev: ActionState, fd: FormData): Promise<A
         .split('\n')
         .map((s) => s.trim())
         .filter(Boolean),
-      skills: list(str(fd, 'skills')),
       avatar_url: orNull(str(fd, 'avatar_url')),
       updated_at: new Date().toISOString(),
     })
@@ -203,6 +202,42 @@ export async function moveCredential(fd: FormData) {
   revalidate()
 }
 
+/* ------------------------------------------------------------------- skills */
+
+export async function saveSkill(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  const id = str(fd, 'id')
+  const name = str(fd, 'name')
+  if (!name) return { ok: false, message: 'Please fix the highlighted fields.', errors: { name: 'Name is required.' } }
+
+  const supabase = await createClient()
+  const payload = { name, icon_url: orNull(str(fd, 'icon_url')), updated_at: new Date().toISOString() }
+
+  if (id) {
+    const { error } = await supabase.from('skills').update(payload).eq('id', id)
+    if (error) return { ok: false, message: error.message }
+    revalidate()
+    return { ok: true, message: 'Skill saved.' }
+  }
+
+  const { count } = await supabase.from('skills').select('*', { count: 'exact', head: true })
+  const { error } = await supabase.from('skills').insert({ ...payload, sort_order: (count ?? 0) + 1 })
+  if (error) return { ok: false, message: error.message }
+  revalidate()
+  redirect('/admin/skills?created=1')
+}
+
+export async function deleteSkill(fd: FormData) {
+  const supabase = await createClient()
+  await supabase.from('skills').delete().eq('id', str(fd, 'id'))
+  revalidate()
+  redirect('/admin/skills')
+}
+
+export async function moveSkill(fd: FormData) {
+  await moveRow('skills', str(fd, 'id'), Number(fd.get('dir')) as -1 | 1)
+  revalidate()
+}
+
 /* -------------------------------------------------------------------- auth */
 
 export async function logout() {
@@ -214,7 +249,7 @@ export async function logout() {
 /* ----------------------------------------------------------------- helpers */
 
 /** Swap a row with its neighbour and renumber sort_order 1..n. */
-async function moveRow(table: 'projects' | 'credentials', id: string, dir: -1 | 1) {
+async function moveRow(table: 'projects' | 'credentials' | 'skills', id: string, dir: -1 | 1) {
   const supabase = await createClient()
   const { data } = await supabase
     .from(table)
