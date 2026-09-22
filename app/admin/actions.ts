@@ -15,8 +15,8 @@ export async function updateProfile(formData: FormData) {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
-  // Only overwrite the picture when a new file was actually chosen
-  const avatarUrl = await uploadIfPresent(supabase, formData.get('avatar') as File)
+  // The browser uploads the image itself and sends back only the URL
+  const avatarUrl = (formData.get('avatar_url') as string) || null
 
   await supabase
     .from('profile')
@@ -50,7 +50,7 @@ export async function updateContact(formData: FormData) {
 
 export async function addProject(formData: FormData) {
   const supabase = await createClient()
-  const imageUrl = await uploadIfPresent(supabase, formData.get('image') as File)
+  const imageUrl = (formData.get('image_url') as string) || null
 
   await supabase.from('projects').insert({
     title: formData.get('title'),
@@ -71,7 +71,7 @@ export async function deleteProject(formData: FormData) {
 
 export async function addCredential(formData: FormData) {
   const supabase = await createClient()
-  const imageUrl = await uploadIfPresent(supabase, formData.get('image') as File)
+  const imageUrl = (formData.get('image_url') as string) || null
 
   await supabase.from('credentials').insert({
     title: formData.get('title'),
@@ -95,15 +95,4 @@ export async function logout() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   redirect('/login')
-}
-
-async function uploadIfPresent(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  file: File | null
-) {
-  if (!file || file.size === 0) return null
-  const path = `${Date.now()}-${file.name}`
-  const { error } = await supabase.storage.from('portfolio-media').upload(path, file)
-  if (error) return null
-  return supabase.storage.from('portfolio-media').getPublicUrl(path).data.publicUrl
 }
