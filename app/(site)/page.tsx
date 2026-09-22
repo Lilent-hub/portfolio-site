@@ -93,7 +93,10 @@ export default async function Home() {
           </div>
 
           {profile?.avatar_url && (
-            <div className="rise relative mx-auto w-[min(72vw,320px)] md:w-full md:max-w-[360px]" style={delay(120)}>
+            <div
+              className="rise relative order-first mx-auto w-[min(48vw,200px)] md:order-none md:w-full md:max-w-[360px]"
+              style={delay(120)}
+            >
               <div className="absolute -inset-6 -z-10 rounded-full bg-accent/15 blur-3xl" aria-hidden />
               <div className="ring-pulse aspect-square overflow-hidden rounded-full border-2 border-accent/70 p-1.5">
                 <img
@@ -173,11 +176,15 @@ export default async function Home() {
         />
         {projects.length > 0 ? (
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((p, i) => (
-              <Reveal as="li" key={p.id} delay={i * 70}>
-                <ProjectCard project={p} index={i} />
-              </Reveal>
-            ))}
+            {projects.map((p, i) => {
+              // Lead with one wide card so 5 or 8 projects fill the grid exactly.
+              const featured = i === 0 && projects.length % 3 === 2
+              return (
+                <Reveal as="li" key={p.id} delay={i * 70} className={featured ? 'lg:col-span-2' : ''}>
+                  <ProjectCard project={p} index={i} featured={featured} />
+                </Reveal>
+              )
+            })}
           </ul>
         ) : (
           <p className="rounded-2xl border border-dashed border-line p-10 text-center text-muted">
@@ -239,15 +246,18 @@ export default async function Home() {
             </p>
 
             {contact?.email && (
-              <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="flex flex-col items-center gap-4">
                 <a
                   href={`mailto:${contact.email}`}
                   className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-bg shadow-[var(--shadow-glow)] transition-[transform,background-color] hover:-translate-y-px hover:bg-accent-strong"
                 >
                   <MailIcon size={16} />
-                  {contact.email}
+                  Send an email
                 </a>
-                <CopyButton value={contact.email} label="Copy email" />
+                <div className="flex max-w-full flex-wrap items-center justify-center gap-2 text-sm text-muted">
+                  <span className="break-all font-mono text-[13px]">{contact.email}</span>
+                  <CopyButton value={contact.email} label="Copy" />
+                </div>
               </div>
             )}
 

@@ -3,14 +3,22 @@ import { ViewTransition } from 'react'
 import type { Project } from '@/lib/types'
 import { ArrowUpRightIcon, ImageIcon } from './icons'
 
-export function ProjectCard({ project, index }: { project: Project; index: number }) {
+export function ProjectCard({
+  project,
+  index,
+  featured = false,
+}: {
+  project: Project
+  index: number
+  featured?: boolean
+}) {
   return (
     <Link
       href={`/projects/${project.slug}`}
       className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[var(--shadow-lift)] focus-visible:outline-offset-4"
     >
       <ViewTransition name={`project-image-${project.slug}`}>
-        <div className="relative aspect-[16/10] overflow-hidden bg-surface-2">
+        <div className={`relative overflow-hidden bg-surface-2 ${featured ? 'aspect-[16/10] lg:aspect-[21/10]' : 'aspect-[16/10]'}`}>
           {project.image_url ? (
             <img
               src={project.image_url}
@@ -29,7 +37,11 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-lg font-semibold leading-snug tracking-tight text-text">
+          <h3
+            className={`font-display font-semibold leading-snug tracking-tight text-text ${
+              featured ? 'text-lg lg:text-2xl' : 'text-lg'
+            }`}
+          >
             {project.title}
           </h3>
           <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-muted transition-[color,border-color,transform] group-hover:border-accent group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5">

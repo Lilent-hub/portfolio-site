@@ -122,9 +122,9 @@ export function Nav({ email, initials = 'JD' }: { email?: string | null; initial
 
       <div
         id="mobile-menu"
-        className={`md:hidden ${open ? 'block' : 'hidden'} border-t border-line bg-bg/95 backdrop-blur-xl`}
+        className={`md:hidden ${open ? 'block' : 'hidden'} min-h-[calc(100dvh-4rem)] border-t border-line bg-bg/95 backdrop-blur-xl`}
       >
-        <ul className="mx-auto flex max-w-[1100px] flex-col px-5 py-3">
+        <ul className="mx-auto flex max-w-[1100px] flex-col px-5 py-4">
           {LINKS.map((l, i) => (
             <li key={l.id} className="rise" style={{ '--delay': `${i * 40}ms` } as React.CSSProperties}>
               <Link

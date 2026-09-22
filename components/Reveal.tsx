@@ -27,17 +27,25 @@ export function Reveal({
     if (!el) return
     const io = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            el.classList.add('is-visible')
-            io.disconnect()
-          }
-        }
+        if (entries.some((e) => e.isIntersecting)) show()
       },
       { rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
     )
-    io.observe(el)
-    return () => io.disconnect()
+    // Content must never stay hidden, whatever the observer does.
+    const failsafe = setTimeout(() => show(), 4000)
+    function show() {
+      el!.classList.add('is-visible')
+      io.disconnect()
+      clearTimeout(failsafe)
+    }
+    // Already on screen (hash navigation, restored scroll) → no need to wait.
+    const r = el.getBoundingClientRect()
+    if (r.top < window.innerHeight && r.bottom > 0) show()
+    else io.observe(el)
+    return () => {
+      io.disconnect()
+      clearTimeout(failsafe)
+    }
   }, [])
 
   return (
