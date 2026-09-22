@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "rehost-images": "node scripts/rehost-images.ts"
+    "rehost-images": "node scripts/rehost-images.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
