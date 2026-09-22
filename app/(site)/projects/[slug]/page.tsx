@@ -37,7 +37,7 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
           All projects
         </Link>
 
-        <header className="mt-8 grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end">
+        <header className="mt-8 grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-start">
           <div className="flex flex-col gap-5">
             {project.tags.length > 0 && (
               <ul className="flex flex-wrap gap-2">
