@@ -15,8 +15,6 @@ export async function updateProfile(formData: FormData) {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
-  // The browser uploads the image itself and sends back only the URL
-  const avatarUrl = (formData.get('avatar_url') as string) || null
 
   await supabase
     .from('profile')
@@ -25,7 +23,6 @@ export async function updateProfile(formData: FormData) {
       headline: formData.get('headline'),
       bio: formData.get('bio'),
       skills,
-      ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
       updated_at: new Date().toISOString(),
     })
     .eq('id', formData.get('id'))

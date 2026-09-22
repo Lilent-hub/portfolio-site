@@ -5,7 +5,6 @@ export type Profile = {
   bio: string | null
   skills: string[] | null
   resume_url: string | null
-  avatar_url: string | null
   updated_at: string
 }
 

@@ -43,7 +43,6 @@ export default async function AdminPage() {
         <h2 className="mb-3 font-medium">Profile & Skills</h2>
         <form action={updateProfile} className="flex flex-col gap-3">
           <input type="hidden" name="id" value={profile?.id} />
-          <ImageUploadField name="avatar_url" label="Profile picture" currentUrl={profile?.avatar_url} />
           <input name="name" defaultValue={profile?.name} placeholder="Name" className="border rounded px-3 py-2" />
           <input name="headline" defaultValue={profile?.headline ?? ''} placeholder="Headline" className="border rounded px-3 py-2" />
           <textarea name="bio" defaultValue={profile?.bio ?? ''} placeholder="Bio" rows={4} className="border rounded px-3 py-2" />
